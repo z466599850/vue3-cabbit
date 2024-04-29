@@ -1,13 +1,5 @@
 <script setup>
-import {layoutGetHeadService} from '@/apis/layout'
-import {ref} from 'vue'
-const categoryList = ref([])
-
-const GetHeadService = async () => {
-  categoryList.value = await layoutGetHeadService()
-  console.log(categoryList.value.result)
-}
-GetHeadService()
+import CategoryList from '../components/CategoryList.vue'
 </script>
 
 <template>
@@ -16,11 +8,7 @@ GetHeadService()
       <h1 class="logo">
         <RouterLink to="/">小兔鲜</RouterLink>
       </h1>
-      <ul class="app-header-nav">
-        <li class="home" v-for="c in categoryList.result" :key="c.id">
-          <RouterLink to="/">{{ c.name }}</RouterLink>
-        </li>
-      </ul>
+      <CategoryList />
       <div class="search">
         <i class="iconfont icon-search"></i>
         <input type="text" placeholder="搜一搜">
@@ -52,38 +40,6 @@ GetHeadService()
       background: url('@/assets/images/logo.png') no-repeat center 18px / contain;
     }
   }
-
-  .app-header-nav {
-    width: 820px;
-    display: flex;
-    padding-left: 40px;
-    position: relative;
-    z-index: 998;
-  
-    li {
-      margin-right: 40px;
-      width: 38px;
-      text-align: center;
-  
-      a {
-        font-size: 16px;
-        line-height: 32px;
-        height: 32px;
-        display: inline-block;
-  
-        &:hover {
-          color: $xtxColor;
-          border-bottom: 1px solid $xtxColor;
-        }
-      }
-  
-      .active {
-        color: $xtxColor;
-        border-bottom: 1px solid $xtxColor;
-      }
-    }
-  }
-
   .search {
     width: 170px;
     height: 32px;

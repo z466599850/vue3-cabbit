@@ -7,8 +7,8 @@ const httpInstance = axios.create({
 
 httpInstance.interceptors.request.use(
   (config) => {
-
-  return config
+    
+    return config
 },
  (error) => Promise.reject(error))
 
