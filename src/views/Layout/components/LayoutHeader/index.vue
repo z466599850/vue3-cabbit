@@ -1,5 +1,13 @@
 <script setup>
+import {layoutGetHeadService} from '@/apis/layout'
+import {ref} from 'vue'
+const categoryList = ref([])
 
+const GetHeadService = async () => {
+  categoryList.value = await layoutGetHeadService()
+  console.log(categoryList.value.result)
+}
+GetHeadService()
 </script>
 
 <template>
@@ -9,12 +17,9 @@
         <RouterLink to="/">小兔鲜</RouterLink>
       </h1>
       <ul class="app-header-nav">
-        <li class="home">
-          <RouterLink to="/">首页</RouterLink>
+        <li class="home" v-for="c in categoryList.result" :key="c.id">
+          <RouterLink to="/">{{ c.name }}</RouterLink>
         </li>
-        <li> <RouterLink to="/">居家</RouterLink> </li>
-        <li> <RouterLink to="/">美食</RouterLink> </li>
-        <li> <RouterLink to="/">服饰</RouterLink> </li>
       </ul>
       <div class="search">
         <i class="iconfont icon-search"></i>

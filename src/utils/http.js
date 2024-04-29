@@ -5,12 +5,14 @@ const httpInstance = axios.create({
   timeout: 5000
 })
 
-httpInstance.interceptors.request(config => {
+httpInstance.interceptors.request.use(
+  (config) => {
 
   return config
-}, error => Promise.reject(error))
+},
+ (error) => Promise.reject(error))
 
-httpInstance.interceptors.response(res => {
+httpInstance.interceptors.response.use(res => {
 
   return res.data
 },error => Promise.reject(error))
