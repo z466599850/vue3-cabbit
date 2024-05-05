@@ -3,12 +3,21 @@ import {useCategoryStore} from '@/stores/category.js'
 
 const CategoryStore = useCategoryStore()
 
+const onActiveUl = (e) => {
+  document.querySelectorAll('.router-link-active').forEach(item => {
+    item.classList.remove('active')
+  })
+  e.target.classList.add('active')
+}
 </script>
 
 <template>
-  <ul class="app-header-nav">
+  <ul class="app-header-nav" @click="onActiveUl">
+    <li>
+      <RouterLink class="active" to="/">首页</RouterLink>
+    </li>
     <li class="home" v-for="c in CategoryStore.categoryList" :key="c.id">
-      <RouterLink to="/">{{ c.name }}</RouterLink>
+      <RouterLink to="/" @click="onActive">{{ c.name }}</RouterLink>
     </li>
   </ul>
   
