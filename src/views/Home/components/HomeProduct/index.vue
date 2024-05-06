@@ -2,6 +2,7 @@
 import HomePanel from '../components/HomePanel.vue'
 import {onMounted, ref} from 'vue'
 import {homeGetInstanceService} from '@/apis/home'
+import GoodsItem from '@/views/Category/components/GoodsItem.vue';
 const list = ref([])
 const getInstance = async () => {
   const {result} = await homeGetInstanceService()
@@ -23,15 +24,9 @@ onMounted(()=>getInstance())
             <span>{{ item.saleInfo }}</span>
           </strong>
         </RouterLink>
+        
         <ul class="goods-list">
-          <li v-for="good in item.goods" :key="good.id">
-            <RouterLink to="/" class="goods-item">
-              <img v-img-lazy="good.picture" alt="" />
-              <p class="name ellipsis">{{ good.name }}</p>
-              <p class="desc ellipsis">{{ good.desc }}</p>
-              <p class="price">&yen;{{ good.price }}</p>
-            </RouterLink>
-          </li>
+          <GoodsItem v-for="good in item.goods" :goods="good" :key="good.id"></GoodsItem>
         </ul>
       </div>
     </HomePanel>
