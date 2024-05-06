@@ -1,5 +1,4 @@
 <script setup>
-import XtxSku from '@/components/XtxSku/index.vue'
 import PreviewPicture from './components/PreviewPicture.vue'
 import GoodsAside from './components/GoodsAside.vue'
 import {getCommodityDetailListService,} from '@/apis/commodity'
@@ -23,6 +22,10 @@ const handleChange = (value) => {
 onMounted(() => {
   getDetailList()
 })
+
+const skuChange = (sku) => {
+  console.log(sku)
+}
 </script>
 
 <template>
@@ -93,7 +96,7 @@ onMounted(() => {
                 </dl>
               </div>
               <!-- sku组件 -->
-              <XtxSku :goods="{skus: list.skus,specs: list.specs}"></XtxSku>
+              <XtxSku :goods="list" @change="skuChange"></XtxSku>
               <!-- 数据组件 -->
 
               <!-- 按钮组件 -->
