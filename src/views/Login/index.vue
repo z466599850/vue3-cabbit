@@ -1,8 +1,10 @@
 <script setup>
 import {ref} from 'vue'
-
+import { useRoute } from 'vue-router';
 import {useUserStore} from '@/stores/user'
 import router from '@/router';
+
+const route = useRoute()
 const form = ref()
 const formRule = ref({
   account: [
@@ -36,7 +38,9 @@ const onLogin = async () => {
   form.value.validate()
   const { account, password } =  formModel.value
   userStore.getUserInfo( { account, password })
-  router.replace('/')
+
+  const url = route.query.backUrl || '/'
+  router.replace(url)
   ElMessage({ message: '登录成功',type: 'success'})
   
 }

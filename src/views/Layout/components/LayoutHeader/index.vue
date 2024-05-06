@@ -1,5 +1,9 @@
 <script setup>
 import CategoryList from '../components/CategoryList.vue'
+import { useCarStore } from '@/stores/car';
+const carStore = useCarStore()
+// 获取失败，原因：token还没赋值就发起请求了
+carStore.getCarList()
 </script>
 
 <template>
@@ -14,6 +18,19 @@ import CategoryList from '../components/CategoryList.vue'
         <input type="text" placeholder="搜一搜">
       </div>
       <!-- 头部购物车 -->
+      <el-popover
+        placement="bottom-start"
+        :width="400"
+        trigger="hover"
+      >
+        <template #reference>
+          <el-link  :underline="false" style="color: black;margin-left: 5px;">
+            <el-icon :size="28"><ShoppingCart /></el-icon>
+          </el-link>
+        </template>
+        
+      </el-popover>
+
     </div>
   </header>
 </template>

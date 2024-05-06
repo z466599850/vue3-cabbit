@@ -3,8 +3,12 @@ import PreviewPicture from './components/PreviewPicture.vue'
 import GoodsAside from './components/GoodsAside.vue'
 import {getCommodityDetailListService,} from '@/apis/commodity'
 import {ref,onMounted} from 'vue'
-import {useRoute} from 'vue-router'
+import {useRoute,useRouter} from 'vue-router'
+import {useUserStore} from '@/stores/user.js'
+import { useCarStore } from '@/stores/car'
 
+
+const router = useRouter()
 const route = useRoute()
 const list = ref([])
 const num = ref(1)
@@ -23,20 +27,46 @@ onMounted(() => {
   getDetailList()
 })
 
+const skuData = {}
 const skuChange = (sku) => {
-  console.log(sku)
+  skuData.value = sku
 }
+const userStore = useUserStore()
+const carStore = useCarStore()
+const onAddShopping = async () => {
+  if(!skuData.value) {
+    ElMessage.warning('请选择规格')
+    return
+  }
+  if(!userStore.userInfo.token) {
+    router.push({
+      path: '/login',
+      query: {
+        backUrl: `/detail/${route.params.id}`
+      }
+    })
+  }
+
+  skuData.value.count = num.value
+  console.log(skuData.value)
+  console.log(skuData.value)
+  carStore.addCar(skuData.value)
+  
+
+}
+
+
 </script>
 
 <template>
   <div class="xtx-goods-page">
-    <div class="container">
+    <div class="container" v-if="list.details">
       <div class="bread-container">
         <el-breadcrumb separator=">">
           <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item :to="{ path: '/' }">母婴
+          <el-breadcrumb-item :to="{ path: `/category/${list.categories[1]?.id}` }">{{ list.categories[1]?.name }}
           </el-breadcrumb-item>
-          <el-breadcrumb-item :to="{ path: '/' }">跑步鞋
+          <el-breadcrumb-item :to="{ path: `/category/sub/${list.categories[0]?.id}` }">{{list.categories[0]?.name}}
           </el-breadcrumb-item>
           <el-breadcrumb-item>{{ list.desc }}</el-breadcrumb-item>
         </el-breadcrumb>
@@ -102,7 +132,7 @@ const skuChange = (sku) => {
               <!-- 按钮组件 -->
               <el-input-number v-model="num" :min="1" @change="handleChange"></el-input-number>
               <div>
-                <el-button size="large" class="btn">
+                <el-button @click="onAddShopping" size="large" class="btn">
                   加入购物车
                 </el-button>
               </div>
