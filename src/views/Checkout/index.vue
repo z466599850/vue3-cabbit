@@ -1,10 +1,13 @@
 <script setup>
-import {inject} from 'vue'
-const checkInfo = {}  // 订单对象
-const curAddress = {}  // 地址对象
+import { useOrderStore } from '@/stores';
 
-const message = inject('order-list')
-console.log(message,'inject')
+import Table from './components/Table/index.vue'
+import Address from './components/Address/index.vue'
+
+const orderStore = useOrderStore()
+const checkInfo = {}  // 订单对象
+
+
 </script>
 
 <template>  
@@ -12,54 +15,11 @@ console.log(message,'inject')
     <div class="container">
       <div class="wrapper">
         <!-- 收货地址 -->
-        <h3 class="box-title">收货地址</h3>
-        <div class="box-body">
-          <div class="address">
-            <div class="text">
-              <div class="none" v-if="!curAddress">您需要先添加收货地址才可提交订单。</div>
-              <ul v-else>
-                <li><span>收<i />货<i />人：</span>{{ curAddress.receiver }}</li>
-                <li><span>联系方式：</span>{{ curAddress.contact }}</li>
-                <li><span>收货地址：</span>{{ curAddress.fullLocation }} {{ curAddress.address }}</li>
-              </ul>
-            </div>
-            <div class="action">
-              <el-button size="large" @click="toggleFlag = true">切换地址</el-button>
-              <el-button size="large" @click="addFlag = true">添加地址</el-button>
-            </div>
-          </div>
-        </div>
+       <Address></Address>
         <!-- 商品信息 -->
         <h3 class="box-title">商品信息</h3>
         <div class="box-body">
-          <table class="goods">
-            <thead>
-              <tr>
-                <th width="520">商品信息</th>
-                <th width="170">单价</th>
-                <th width="170">数量</th>
-                <th width="170">小计</th>
-                <th width="170">实付</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="i in checkInfo.goods" :key="i.id">
-                <td>
-                  <a href="javascript:;" class="info">
-                    <img :src="i.picture" alt="">
-                    <div class="right">
-                      <p>{{ i.name }}</p>
-                      <p>{{ i.attrsText }}</p>
-                    </div>
-                  </a>
-                </td>
-                <td>&yen;{{ i.price }}</td>
-                <td>{{ i.price }}</td>
-                <td>&yen;{{ i.totalPrice }}</td>
-                <td>&yen;{{ i.totalPayPrice }}</td>
-              </tr>
-            </tbody>
-          </table>
+          <Table></Table>
         </div>
         <!-- 配送时间 -->
         <h3 class="box-title">配送时间</h3>
@@ -81,11 +41,11 @@ console.log(message,'inject')
           <div class="total">
             <dl>
               <dt>商品件数：</dt>
-              <dd>{{ checkInfo.summary?.goodsCount }}件</dd>
+              <dd>{{ orderStore.orderListTotal }}件</dd>
             </dl>
             <dl>
               <dt>商品总价：</dt>
-              <dd>¥{{ checkInfo.summary?.totalPrice.toFixed(2) }}</dd>
+              <dd>¥{{ orderStore.orderListPrice }}</dd>
             </dl>
             <dl>
               <dt>运<i></i>费：</dt>
@@ -104,8 +64,6 @@ console.log(message,'inject')
       </div>
     </div>
   </div>
-  <!-- 切换地址 -->
-  <!-- 添加地址 -->
 </template>
 
 <style scoped lang="scss">
@@ -130,118 +88,8 @@ console.log(message,'inject')
   }
 }
 
-.address {
-  border: 1px solid #f5f5f5;
-  display: flex;
-  align-items: center;
 
-  .text {
-    flex: 1;
-    min-height: 90px;
-    display: flex;
-    align-items: center;
 
-    .none {
-      line-height: 90px;
-      color: #999;
-      text-align: center;
-      width: 100%;
-    }
-
-    >ul {
-      flex: 1;
-      padding: 20px;
-
-      li {
-        line-height: 30px;
-
-        span {
-          color: #999;
-          margin-right: 5px;
-
-          >i {
-            width: 0.5em;
-            display: inline-block;
-          }
-        }
-      }
-    }
-
-    >a {
-      color: $xtxColor;
-      width: 160px;
-      text-align: center;
-      height: 90px;
-      line-height: 90px;
-      border-right: 1px solid #f5f5f5;
-    }
-  }
-
-  .action {
-    width: 420px;
-    text-align: center;
-
-    .btn {
-      width: 140px;
-      height: 46px;
-      line-height: 44px;
-      font-size: 14px;
-
-      &:first-child {
-        margin-right: 10px;
-      }
-    }
-  }
-}
-
-.goods {
-  width: 100%;
-  border-collapse: collapse;
-  border-spacing: 0;
-
-  .info {
-    display: flex;
-    text-align: left;
-
-    img {
-      width: 70px;
-      height: 70px;
-      margin-right: 20px;
-    }
-
-    .right {
-      line-height: 24px;
-
-      p {
-        &:last-child {
-          color: #999;
-        }
-      }
-    }
-  }
-
-  tr {
-    th {
-      background: #f5f5f5;
-      font-weight: normal;
-    }
-
-    td,
-    th {
-      text-align: center;
-      padding: 20px;
-      border-bottom: 1px solid #f5f5f5;
-
-      &:first-child {
-        border-left: 1px solid #f5f5f5;
-      }
-
-      &:last-child {
-        border-right: 1px solid #f5f5f5;
-      }
-    }
-  }
-}
 
 .my-btn {
   width: 228px;

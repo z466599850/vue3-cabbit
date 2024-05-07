@@ -1,28 +1,15 @@
 <script setup>
 import Table from './components/Table.vue'
-import {ref,provide} from 'vue'
-import {useCarStore, useUserStore} from '@/stores'
+import {useCarStore, useUserStore, useOrderStore} from '@/stores'
 import { useRouter } from 'vue-router'
 
 const userStore = useUserStore()
 const carStore = useCarStore()
+const orderStore = useOrderStore()
 const router = useRouter()
-const total = ref(0)
-const price = ref(0)
-const selectionTotal = ref(0)
 
-const orderList = ref([])
 const getCarData = (arr) => {
-  orderList.value = arr
-  total.value = arr.reduce((total,item) => {
-    return total + item.count
-  },0)
-  price.value = arr.reduce((total,item) => {
-    return total + (item.price * item.count)
-  },0)
-  selectionTotal.value = arr.reduce((total,item) => {
-    return total + item.count
-  },0)
+  orderStore.setOrderList(arr)
 }
 
 const onPayment = () => {
@@ -35,15 +22,14 @@ const onPayment = () => {
     })
     return
   }
-
-  if(orderList.value.length <= 0) {
+  if(orderStore.orderList.length <= 0) {
     ElMessage.warning('请选择要购买的商品')
     return
   }
-  router.push('/checkout')
-  provide('order-list',orderList.value)
-}
 
+  router.push('/checkout')
+ 
+}
 
 </script>
 
@@ -56,8 +42,8 @@ const onPayment = () => {
       <!-- 操作栏 -->
       <div class="action">
         <div class="batch">
-          共 {{ carStore.carListTotal }} 件商品，已选择 {{ selectionTotal }} 件，商品合计：
-          <span class="red">¥ {{ price }} </span>
+          共 {{ carStore.carListTotal }} 件商品，已选择 {{ orderStore.orderListTotal }} 件，商品合计：
+          <span class="red">¥ {{ orderStore.orderListPrice }} </span>
         </div>
         <div class="total">
           <el-button size="large" type="primary" @click="onPayment">下单结算</el-button>

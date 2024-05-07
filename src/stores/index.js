@@ -9,3 +9,4 @@ export default pinia
 export * from './modules/user.js'
 export * from './modules/car.js'
 export * from './modules/category.js'
+export * from './modules/order.js'
