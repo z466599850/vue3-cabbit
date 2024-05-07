@@ -9,7 +9,7 @@ const handleNumberChange = (value,row) => {
 }
 
 const handleSelectionChange = (value) => {
-  console.log(value)  
+  console.log(value)
   emit('car-data',value)
 }
 

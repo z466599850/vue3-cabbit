@@ -13,6 +13,4 @@ export const delCartListService = ids => http.delete('/member/cart',{
   }
 })
 
-export const putCartService = data => http.put(`/member/cart/${data.id}`,{
-  data
-})
+export const putCartService = data => http.put(`/member/cart/${data.id}`,data)
