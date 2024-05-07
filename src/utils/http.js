@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {useUserStore} from '@/stores/user'
+import {useUserStore} from '@/stores/modules/user'
 import { ElMessage } from 'element-plus'
 const httpInstance = axios.create({
   baseURL: 'http://pcapi-xiaotuxian-front-devtest.itheima.net',

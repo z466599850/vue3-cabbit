@@ -1,5 +1,5 @@
 import {createRouter, createWebHistory} from 'vue-router'
-import {useUserStore} from '@/stores/user'
+import {useUserStore} from '@/stores/modules/user'
 
 const Layout = () => import('@/views/Layout/index.vue')
 const Home = () => import('@/views/Home/index.vue')
@@ -7,6 +7,7 @@ const Category = () => import('@/views/Category/index.vue')
 const CategorySub = () => import('@/views/CategorySub/index.vue')
 const Detail = () => import('@/views/Detail/index.vue')
 const Login = () => import('@/views/Login/index.vue')
+const CartList = () => import('@/views/CartList/index.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -17,7 +18,7 @@ const router = createRouter({
       redirect: '/home',
       children: [
         {
-          path: '/home',
+          path: 'home',
           component: Home,
         },
         {
@@ -33,6 +34,10 @@ const router = createRouter({
         {
           path: 'detail/:id',
           component: Detail,
+        },
+        {
+          path: 'cartlist',
+          component: CartList
         }
       ]
     },

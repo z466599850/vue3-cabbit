@@ -13,3 +13,4 @@ export const getDetailHotListService = ({id,type,limit = 3}) => httpInstance.get
     limit
   }
 })
+

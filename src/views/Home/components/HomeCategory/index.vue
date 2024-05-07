@@ -1,5 +1,5 @@
 <script setup>
-import {useCategoryStore} from '@/stores/category'
+import {useCategoryStore} from '@/stores/modules/category'
 
 const CategoryStore = useCategoryStore()
 </script>

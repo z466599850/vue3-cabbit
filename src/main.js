@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import { createPinia } from 'pinia'
+import pinia from './stores'
 
 import App from './App.vue'
 import router from './router'
@@ -16,7 +16,7 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 }
 
 
-app.use(createPinia())
+app.use(pinia)
 app.use(router)
 app.use(lazyPlugin)
 app.use(componentPlugin)

@@ -2,25 +2,25 @@
 import PreviewPicture from './components/PreviewPicture.vue'
 import GoodsAside from './components/GoodsAside.vue'
 import {getCommodityDetailListService,} from '@/apis/commodity'
-import {ref,onMounted} from 'vue'
-import {useRoute,useRouter} from 'vue-router'
-import {useUserStore} from '@/stores/user.js'
-import { useCarStore } from '@/stores/car'
-
+import {ref,onMounted,} from 'vue'
+import {useRoute,useRouter,onBeforeRouteUpdate} from 'vue-router'
+import {useUserStore} from '@/stores/modules/user.js'
+import { useCarStore } from '@/stores/modules/car'
 
 const router = useRouter()
 const route = useRoute()
 const list = ref([])
 const num = ref(1)
 
-const getDetailList = async () => {
-  const {result} = await getCommodityDetailListService(route.params.id)
+const getDetailList = async (id = route.params.id) => {
+  const {result} = await getCommodityDetailListService(id)
   console.log(result,'你好是我详情')
   list.value = result
 }
 
 const handleChange = (value) => {
   console.log(value)
+  num.value = value
 }
 
 onMounted(() => {
@@ -48,12 +48,14 @@ const onAddShopping = async () => {
   }
 
   skuData.value.count = num.value
-  console.log(skuData.value)
-  console.log(skuData.value)
   carStore.addCar(skuData.value)
-  
-
 }
+
+onBeforeRouteUpdate((to) => {
+  getDetailList(to.params.id)
+})
+
+
 
 
 </script>
