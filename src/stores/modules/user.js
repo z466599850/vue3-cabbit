@@ -1,7 +1,9 @@
 import {defineStore} from 'pinia'
 import { ref } from 'vue'
 import {postLoginService} from '@/apis/login'
+import { useCarStore } from './car'
 export const useUserStore = defineStore('user',() => {
+  const carStrore = useCarStore()
   const userInfo = ref({})
   const getUserInfo = async ({ account, password }) => {
     const {result} = await postLoginService({ account, password })
@@ -9,6 +11,7 @@ export const useUserStore = defineStore('user',() => {
   }
   const removeUserInfo = () => {
     userInfo.value = {}
+    carStrore.removeCartList()
   }
   return {
     userInfo,

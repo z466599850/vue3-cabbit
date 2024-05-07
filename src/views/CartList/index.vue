@@ -1,14 +1,19 @@
 <script setup>
 import Table from './components/Table.vue'
-import {ref} from 'vue'
-import {useCarStore} from '@/stores'
+import {ref,provide} from 'vue'
+import {useCarStore, useUserStore} from '@/stores'
+import { useRouter } from 'vue-router'
 
+const userStore = useUserStore()
 const carStore = useCarStore()
+const router = useRouter()
 const total = ref(0)
 const price = ref(0)
 const selectionTotal = ref(0)
+
+const orderList = ref([])
 const getCarData = (arr) => {
-  
+  orderList.value = arr
   total.value = arr.reduce((total,item) => {
     return total + item.count
   },0)
@@ -18,6 +23,25 @@ const getCarData = (arr) => {
   selectionTotal.value = arr.reduce((total,item) => {
     return total + item.count
   },0)
+}
+
+const onPayment = () => {
+  if(!userStore.userInfo.token) {
+    router.push({
+      path: '/login',
+      query: {
+        backUrl: '/cartlist'
+      }
+    })
+    return
+  }
+
+  if(orderList.value.length <= 0) {
+    ElMessage.warning('请选择要购买的商品')
+    return
+  }
+  router.push('/checkout')
+  provide('order-list',orderList.value)
 }
 
 
@@ -36,7 +60,7 @@ const getCarData = (arr) => {
           <span class="red">¥ {{ price }} </span>
         </div>
         <div class="total">
-          <el-button size="large" type="primary" >下单结算</el-button>
+          <el-button size="large" type="primary" @click="onPayment">下单结算</el-button>
         </div>
       </div>
     </div>

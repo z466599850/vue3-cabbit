@@ -1,5 +1,7 @@
 <script setup>
 import {useCarStore} from '@/stores'
+import { useRouter } from 'vue-router';
+const router = useRouter()
 const carStore = useCarStore()
 const emit = defineEmits(['car-data'])
 
@@ -59,7 +61,7 @@ const handleSelectionChange = (value) => {
     <template #empty>
       <div class="cart-none">
         <el-empty description="购物车列表为空">
-          <el-button type="primary">随便逛逛</el-button>
+          <el-button type="primary" @click="router.push('/')">随便逛逛</el-button>
         </el-empty>
       </div>
     </template>

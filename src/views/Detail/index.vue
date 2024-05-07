@@ -34,10 +34,6 @@ const skuChange = (sku) => {
 const userStore = useUserStore()
 const carStore = useCarStore()
 const onAddShopping = async () => {
-  if(!skuData.value) {
-    ElMessage.warning('请选择规格')
-    return
-  }
   if(!userStore.userInfo.token) {
     router.push({
       path: '/login',
@@ -45,7 +41,14 @@ const onAddShopping = async () => {
         backUrl: `/detail/${route.params.id}`
       }
     })
+    return
   }
+
+  if(!skuData.value) {
+    ElMessage.warning('请选择规格')
+    return
+  }
+
 
   skuData.value.count = num.value
   carStore.addCar(skuData.value)

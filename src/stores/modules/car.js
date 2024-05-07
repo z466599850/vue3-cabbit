@@ -12,12 +12,10 @@ export const useCarStore = defineStore('car',() => {
     const item = carList.value.find(item => item.skuId === obj.skuId)
 
     if(item) {
-      item.count += obj.count
-    } else if(userStore.userInfo.token) {
+      putCart({id: item.skuId,count: (item.count + obj.count)})
+    }else {
       await addCartListService(obj)
       getCarList()
-    } else {
-      carList.value.push(obj)
     }
 
     ElMessage.success('添加成功')
@@ -51,6 +49,10 @@ export const useCarStore = defineStore('car',() => {
     await putCartService(data)
   }
 
+  const removeCartList = () => {
+    carList.value = []
+  }
+
   const carListTotal = computed(()=>{
     return carList.value.reduce(( total, item ) => total + item.count,0)
   })
@@ -67,7 +69,8 @@ export const useCarStore = defineStore('car',() => {
     getCarList,
     putCart,
     carListTotal,
-    carListPrice
+    carListPrice,
+    removeCartList
    
   }
 },{

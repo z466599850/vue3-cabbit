@@ -8,6 +8,7 @@ const CategorySub = () => import('@/views/CategorySub/index.vue')
 const Detail = () => import('@/views/Detail/index.vue')
 const Login = () => import('@/views/Login/index.vue')
 const CartList = () => import('@/views/CartList/index.vue')
+const Checkout = () => import('@/views/Checkout/index.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,6 +39,10 @@ const router = createRouter({
         {
           path: 'cartlist',
           component: CartList
+        },
+        {
+          path: 'checkout',
+          component: Checkout
         }
       ]
     },
@@ -51,7 +56,7 @@ const router = createRouter({
 })
 
 
-const authUrl = []
+const authUrl = ['/checkout']
 router.beforeEach((to)=>{
   const userStore = useUserStore()
   if(!authUrl.includes(to.path)) {
