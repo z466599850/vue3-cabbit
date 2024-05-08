@@ -1,11 +1,38 @@
 <script setup>
 import { useOrderStore } from '@/stores';
-
 import Table from './components/Table/index.vue'
 import Address from './components/Address/index.vue'
+import ListConfig from './config/ListConfig';
+import { ElMessage } from 'element-plus';
+import {postOrderService} from '@/apis/order.js'
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 const orderStore = useOrderStore()
-const checkInfo = {}  // 订单对象
+const router = useRouter()
+const activePay = ref('1')
+const activeDelivery = ref({id: '1',deliveryWay: '不限送货时间：周一至周日'})
+
+const payOnDelivery = ref(5)
+
+const submitOrderForm = async () => {
+  console.log('我是提交订单')
+  
+  const {result} = await postOrderService({
+    deliveryTimeType: +activeDelivery.value.id,
+    payType: +activePay.value,
+    goods: orderStore.orderList,
+    addressId: orderStore.orderAddressId
+  })
+  console.log(result)
+  if(!result.id) {
+    ElMessage.error('提交订单失败')
+    return
+  }
+  router.push(`/pay/${result.id}`)
+}
+
+
 
 
 </script>
@@ -24,15 +51,12 @@ const checkInfo = {}  // 订单对象
         <!-- 配送时间 -->
         <h3 class="box-title">配送时间</h3>
         <div class="box-body">
-          <a class="my-btn active" href="javascript:;">不限送货时间：周一至周日</a>
-          <a class="my-btn" href="javascript:;">工作日送货：周一至周五</a>
-          <a class="my-btn" href="javascript:;">双休日、假日送货：周六至周日</a>
+          <a @click.prevent="activeDelivery = item" v-for="item in ListConfig.deliveryTimeList" :key="item.id" class="my-btn" :class="{active: item.id === activeDelivery.id}">{{ item.deliveryWay }}</a>
         </div>
         <!-- 支付方式 -->
         <h3 class="box-title">支付方式</h3>
         <div class="box-body">
-          <a class="my-btn active" href="javascript:;">在线支付</a>
-          <a class="my-btn" href="javascript:;">货到付款</a>
+          <a @click.prevent="activePay = item.id" v-for="item in ListConfig.payWayList" :key="item.id" class="my-btn" :class="{active: item.id === activePay}">{{ item.payWay }}</a>
           <span style="color:#999">货到付款需付5元手续费</span>
         </div>
         <!-- 金额明细 -->
@@ -49,17 +73,18 @@ const checkInfo = {}  // 订单对象
             </dl>
             <dl>
               <dt>运<i></i>费：</dt>
-              <dd>¥{{ checkInfo.summary?.postFee.toFixed(2) }}</dd>
+              <dd v-if="activePay === '1'">¥ {{ orderStore.orderListPostFee}}</dd>
+              <dd v-else>¥ {{ payOnDelivery.toFixed(2) }}</dd>
             </dl>
             <dl>
               <dt>应付总额：</dt>
-              <dd class="price">{{ checkInfo.summary?.totalPayPrice.toFixed(2) }}</dd>
+              <dd class="price">{{ (activePay === '1' ? +orderStore.orderListPostFee : +payOnDelivery.toFixed(2)) + +orderStore.orderListPrice }}</dd>
             </dl>
           </div>
         </div>
         <!-- 提交订单 -->
         <div class="submit">
-          <el-button type="primary" size="large" >提交订单</el-button>
+          <el-button type="primary" size="large" @click="submitOrderForm">提交订单</el-button>
         </div>
       </div>
     </div>
@@ -100,6 +125,7 @@ const checkInfo = {}  // 订单对象
   margin-right: 25px;
   color: #666666;
   display: inline-block;
+  cursor: pointer;
 
   &.active,
   &:hover {

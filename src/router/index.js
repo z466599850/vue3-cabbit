@@ -9,6 +9,7 @@ const Detail = () => import('@/views/Detail/index.vue')
 const Login = () => import('@/views/Login/index.vue')
 const CartList = () => import('@/views/CartList/index.vue')
 const Checkout = () => import('@/views/Checkout/index.vue')
+const Pay = () => import('@/views/Pay/index.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -43,6 +44,10 @@ const router = createRouter({
         {
           path: 'checkout',
           component: Checkout
+        },
+        {
+          path: 'pay/:id',
+          component: Pay
         }
       ]
     },

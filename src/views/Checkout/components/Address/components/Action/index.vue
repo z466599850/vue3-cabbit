@@ -1,7 +1,10 @@
 <script setup>
-import {ref} from 'vue'
+import { ref, watch} from 'vue'
 import {getAddressService} from '@/apis/address.js'
+import AddAddressForm from './components/AddAddressForm.vue'
+import { useOrderStore } from '@/stores';
 
+const orderStore = useOrderStore()
 const openChangeAddress = ref(false)
 const openAddAddress = ref(false)
 const addressList = ref([])
@@ -10,20 +13,19 @@ const addressActive = ref({})
 const getAddress = async () => {
   const {result} = await getAddressService()
   addressList.value = result
+  addressActive.value = result[0]
   console.log(result,'我是收获地址')
 }
 getAddress()
 
+watch(addressActive,(value) => {
+  orderStore.orderAddressId = value.id
+})
 const onChangeAddress = (item) => {
   console.log(item,'我是切换地址')
   addressActive.value = item
   openChangeAddress.value = false
 }
-// const onAddAddress = () => {
-//   console.log('我是添加地址')
-//   openAddAddress.value = false
-// }
-
 
 </script>
 
@@ -32,9 +34,9 @@ const onChangeAddress = (item) => {
     <div class="text">
       <div class="none" v-if="addressList.length === 0">您需要先添加收货地址才可提交订单。</div>
       <ul v-else>
-        <li><span>收<i />货<i />人：</span>{{ addressActive.receiver || addressList[0].receiver }}</li>
-        <li><span>联系方式：</span>{{ addressActive.contact || addressList[0].contact }}</li>
-        <li><span>收货地址：</span>{{ addressActive.fullLocation || addressList[0].fullLocation }} {{ addressActive.address || addressList[0].address }}</li>
+        <li><span>收<i />货<i />人：</span>{{ addressActive?.receiver }}</li>
+        <li><span>联系方式：</span>{{ addressActive?.contact }}</li>
+        <li><span>收货地址：</span>{{ addressActive?.fullLocation }} {{ addressActive?.address || addressList[0].address }}</li>
       </ul>
     </div>
     <div class="action">
@@ -62,9 +64,8 @@ const onChangeAddress = (item) => {
   </el-dialog>
 
   <el-dialog v-model="openAddAddress" @close="openAddAddress = false" title="添加地址" width="35%" center>
-    
+    <AddAddressForm />
     <template #footer>
-      
       <span class="dialog-footer">
         <el-button @click="openAddAddress = false">取消</el-button>
         <el-button type="primary">确定</el-button>

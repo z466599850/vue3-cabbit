@@ -1,8 +1,10 @@
 <script setup>
-import {useCarStore} from '@/stores'
+import {useCarStore, useOrderStore} from '@/stores'
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 const router = useRouter()
 const carStore = useCarStore()
+const orderStore = useOrderStore()
 const emit = defineEmits(['car-data'])
 
 const handleNumberChange = (value,row) => {
@@ -15,10 +17,25 @@ const handleSelectionChange = (value) => {
   emit('car-data',value)
 }
 
+const TableRef = ref()
+
+const getCheckout = () => {
+  console.log(TableRef.value)
+  if(orderStore.orderList.length > 0) {
+    orderStore.orderList.forEach(item => {
+    TableRef.value?.toggleRowSelection(item)
+  })
+  }
+}
+
+onMounted(() => {
+  getCheckout()
+})
+
 </script>
 
 <template>
-  <el-table header-align="center" @selection-change="handleSelectionChange" :data="carStore.carList">
+  <el-table ref="TableRef" header-align="center" @selection-change="handleSelectionChange" :data="carStore.carList">
     <el-table-column width="120" type="selection"></el-table-column>
     <el-table-column align="center"  label="商品信息" width="400">
       <template #default="{row}">
