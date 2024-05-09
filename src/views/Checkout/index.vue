@@ -3,33 +3,33 @@ import { useOrderStore } from '@/stores';
 import Table from './components/Table/index.vue'
 import Address from './components/Address/index.vue'
 import ListConfig from './config/ListConfig';
-import { ElMessage } from 'element-plus';
-import {postOrderService} from '@/apis/order.js'
+
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const orderStore = useOrderStore()
 const router = useRouter()
-const activePay = ref('1')
-const activeDelivery = ref({id: '1',deliveryWay: '不限送货时间：周一至周日'})
 
+orderStore.setActiveDelivery(ListConfig.deliveryTimeList[0])
 const payOnDelivery = ref(5)
 
 const submitOrderForm = async () => {
   console.log('我是提交订单')
   
-  const {result} = await postOrderService({
-    deliveryTimeType: +activeDelivery.value.id,
-    payType: +activePay.value,
-    goods: orderStore.orderList,
-    addressId: orderStore.orderAddressId
-  })
-  console.log(result)
-  if(!result.id) {
-    ElMessage.error('提交订单失败')
-    return
+  await orderStore.getSubmitOrderForm()
+
+  // 等待解决异步问题
+  console.log('看看我执行了吗')
+  if(orderStore.orderSubmitFormResult.id) {
+    
+    router.push({
+      path: '/pay',
+      query: {
+        id: orderStore.orderSubmitFormResult.id
+      }
+    })
   }
-  router.push(`/pay/${result.id}`)
+ 
 }
 
 
@@ -51,12 +51,12 @@ const submitOrderForm = async () => {
         <!-- 配送时间 -->
         <h3 class="box-title">配送时间</h3>
         <div class="box-body">
-          <a @click.prevent="activeDelivery = item" v-for="item in ListConfig.deliveryTimeList" :key="item.id" class="my-btn" :class="{active: item.id === activeDelivery.id}">{{ item.deliveryWay }}</a>
+          <a @click.prevent="orderStore.setActiveDelivery(item)" v-for="item in ListConfig.deliveryTimeList" :key="item.id" class="my-btn" :class="{active: item.id === orderStore.activeDelivery?.id}">{{ item.deliveryWay }}</a>
         </div>
         <!-- 支付方式 -->
         <h3 class="box-title">支付方式</h3>
         <div class="box-body">
-          <a @click.prevent="activePay = item.id" v-for="item in ListConfig.payWayList" :key="item.id" class="my-btn" :class="{active: item.id === activePay}">{{ item.payWay }}</a>
+          <a @click.prevent="orderStore.setActivePay(item.id)" v-for="item in ListConfig.payWayList" :key="item.id" class="my-btn" :class="{active: item.id === orderStore.activePay}">{{ item.payWay }}</a>
           <span style="color:#999">货到付款需付5元手续费</span>
         </div>
         <!-- 金额明细 -->
@@ -73,12 +73,13 @@ const submitOrderForm = async () => {
             </dl>
             <dl>
               <dt>运<i></i>费：</dt>
-              <dd v-if="activePay === '1'">¥ {{ orderStore.orderListPostFee}}</dd>
+              <dd v-if="orderStore.activePay === '1'">¥ {{ orderStore.orderListPostFee}}</dd>
               <dd v-else>¥ {{ payOnDelivery.toFixed(2) }}</dd>
             </dl>
             <dl>
               <dt>应付总额：</dt>
-              <dd class="price">{{ (activePay === '1' ? +orderStore.orderListPostFee : +payOnDelivery.toFixed(2)) + +orderStore.orderListPrice }}</dd>
+              <!-- 等待完成将付钱总额放到vuex中，将activePay的值传递过去进行判断要不要加五块钱 或 直接写方法传递过去 -->
+              <dd class="price">{{ orderStore.orderListPriceTotal }}</dd>
             </dl>
           </div>
         </div>

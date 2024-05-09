@@ -5,3 +5,9 @@ export const postOrderService = data => http.post('/member/order',{
   buyerMessage: '', // 买家备注留言
   ...data
 })
+
+export const getOrderDetailService = id => http.get(`/member/order/${id}`)
+
+export const getOrderListService = params => http.get('/member/order',{
+  params
+})
