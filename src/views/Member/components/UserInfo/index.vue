@@ -1,5 +1,4 @@
 <script setup>
-// 导入userStore
 import { useUserStore } from '@/stores'
 import {getMemberLikeListService} from '@/apis/member'
 import { onMounted, ref } from 'vue'

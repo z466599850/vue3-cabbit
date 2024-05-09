@@ -1,5 +1,7 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import {useUserStore} from '@/stores/modules/user'
+import { ElLoading } from 'element-plus'
+import 'element-plus/theme-chalk/el-loading.css'
 
 const Layout = () => import('@/views/Layout/index.vue')
 const Home = () => import('@/views/Home/index.vue')
@@ -82,12 +84,20 @@ const router = createRouter({
       component: Login
     }
 
-  ]
+  ],
+  scrollBehavior(){
+    return {
+      top:0
+    }
+  }
 })
 
 
 const authUrl = ['/checkout']
 router.beforeEach((to)=>{
+  ElLoading.service({
+    fullscreen: true
+  })
   const userStore = useUserStore()
   if(!authUrl.includes(to.path)) {
     return true
@@ -98,5 +108,12 @@ router.beforeEach((to)=>{
   return true
 })
 
+router.afterEach((to)=>{
+  setTimeout(()=>{
+    const loadingInstance = ElLoading.service()
+    loadingInstance.close()
+  },1000)
+  document.title = to.meta.title || 'my project'
+})
 
 export default router
